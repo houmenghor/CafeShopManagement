@@ -41,6 +41,8 @@
             label4 = new Label();
             txtshowPass = new CheckBox();
             login_btn = new Button();
+            txtRole = new ComboBox();
+            label8 = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -140,23 +142,24 @@
             txtusername.Location = new Point(377, 148);
             txtusername.Name = "txtusername";
             txtusername.Size = new Size(273, 34);
-            txtusername.TabIndex = 4;
+            txtusername.TabIndex = 0;
+            txtusername.TextChanged += txtusername_TextChanged;
             // 
             // txtpassword
             // 
             txtpassword.BorderStyle = BorderStyle.FixedSingle;
             txtpassword.Font = new Font("Segoe UI", 12F);
-            txtpassword.Location = new Point(377, 227);
+            txtpassword.Location = new Point(377, 313);
             txtpassword.Name = "txtpassword";
             txtpassword.PasswordChar = '*';
             txtpassword.Size = new Size(273, 34);
-            txtpassword.TabIndex = 6;
+            txtpassword.TabIndex = 1;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Arial Rounded MT Bold", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(371, 199);
+            label4.Location = new Point(371, 285);
             label4.Name = "label4";
             label4.Size = new Size(104, 21);
             label4.TabIndex = 5;
@@ -166,7 +169,7 @@
             // 
             txtshowPass.AutoSize = true;
             txtshowPass.Font = new Font("Arial Rounded MT Bold", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtshowPass.Location = new Point(377, 267);
+            txtshowPass.Location = new Point(377, 353);
             txtshowPass.Name = "txtshowPass";
             txtshowPass.Size = new Size(174, 25);
             txtshowPass.TabIndex = 7;
@@ -179,12 +182,34 @@
             login_btn.BackColor = Color.FromArgb(7, 99, 102);
             login_btn.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             login_btn.ForeColor = Color.White;
-            login_btn.Location = new Point(377, 324);
+            login_btn.Location = new Point(377, 398);
             login_btn.Name = "login_btn";
             login_btn.Size = new Size(128, 42);
-            login_btn.TabIndex = 8;
+            login_btn.TabIndex = 2;
             login_btn.Text = "LOGIN";
             login_btn.UseVisualStyleBackColor = false;
+            login_btn.Click += login_btn_Click;
+            // 
+            // txtRole
+            // 
+            txtRole.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtRole.FormattingEnabled = true;
+            txtRole.Items.AddRange(new object[] { "Admin", "Staff" });
+            txtRole.Location = new Point(377, 226);
+            txtRole.Name = "txtRole";
+            txtRole.Size = new Size(273, 37);
+            txtRole.TabIndex = 29;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new Font("Arial Rounded MT Bold", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.Location = new Point(377, 202);
+            label8.Name = "label8";
+            label8.Size = new Size(56, 21);
+            label8.TabIndex = 28;
+            label8.Text = "Role:";
+            label8.TextAlign = ContentAlignment.TopCenter;
             // 
             // Form1
             // 
@@ -192,6 +217,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(685, 484);
+            Controls.Add(txtRole);
+            Controls.Add(label8);
             Controls.Add(login_btn);
             Controls.Add(txtshowPass);
             Controls.Add(txtpassword);
@@ -205,6 +232,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -227,5 +255,7 @@
         private Button login_btn;
         private Label label6;
         private PictureBox pictureBox1;
+        private ComboBox txtRole;
+        private Label label8;
     }
 }

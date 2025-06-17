@@ -5,7 +5,7 @@ namespace CafeShopManagement
     public partial class RegisterForm : Form
     {
 
-        SqlConnection connect = new SqlConnection(@"Data Source=DESKTOP-E3574KG\DBSERVER;Initial Catalog=""CafeShop Management"";Integrated Security=True;");
+        SqlConnection connect = Connection.GetConnection();
         public RegisterForm()
         {
             InitializeComponent();
@@ -34,7 +34,9 @@ namespace CafeShopManagement
 
         public bool emptyFields()
         {
-            if (txt_username.Text == "" || txtpassword.Text == "" || txtCpassword.Text == "")
+            if (txt_username.Text == "" || txtpassword.Text == "" 
+                || txtCpassword.Text == "" || txtStatus.Text == "" 
+                || txtRole.Text == "" || txtImageView.Image == null)
             {
                 return true;
             }
@@ -49,13 +51,13 @@ namespace CafeShopManagement
             if (emptyFields())
             {
                 MessageBox.Show("All fiedls are required to be filled", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
             else
             {
                 try
                 {
-                    connect.Open();
+                    if (connect.State == ConnectionState.Closed)
+                        connect.Open();
                     string selectUsername = "SELECT * FROM users WHERE username = @usern"; //check if the username is already taken
                     using (SqlCommand checkUsername = new SqlCommand(selectUsername, connect))
                     {
@@ -68,7 +70,7 @@ namespace CafeShopManagement
                         if (table.Rows.Count >= 1)
                         {
                             string usern = txt_username.Text.Substring(0, 1).ToUpper() + txt_username.Text.Substring(1); //capitalize the first letter of the username
-                            MessageBox.Show(usern+"is already taken", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(usern + "is already taken", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         else if (txtpassword.Text != txtCpassword.Text)
                         {
@@ -80,17 +82,30 @@ namespace CafeShopManagement
                         }
                         else
                         {
-                            string insertData = "INSERT INTO users (username, password, profile_image, role, status, date_reg) " +
+                            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                            string insertData = "INSERT INTO users (username, password, profile_image,role, status, date_reg) " +
                                        "VALUES(@usern, @pass, @image, @role, @status, @date)";
+
+                            string relativePath = Path.Combine(@"C:\\Users\\Menghor\\source\\repos\\CafeShopManagement\\CafeShopManagement\\Admin_Images\\", txt_username.Text.Trim() + ".jpg");
+                            string path = Path.Combine(baseDirectory, relativePath);
+
+                            string directoryPath = Path.GetDirectoryName(path);
+
+                            if (!Directory.Exists(directoryPath))
+                            {
+                                Directory.CreateDirectory(directoryPath);
+                            }
+
+                            File.Copy(txtImageView.ImageLocation, path, true);
                             DateTime today = DateTime.Today;
 
                             using (SqlCommand cmd = new SqlCommand(insertData, connect))
                             {
                                 cmd.Parameters.AddWithValue("@usern", txt_username.Text.Trim());
                                 cmd.Parameters.AddWithValue("@pass", txtpassword.Text.Trim());
-                                cmd.Parameters.AddWithValue("@image", DBNull.Value);
-                                cmd.Parameters.AddWithValue("@role", "Cashier");
-                                cmd.Parameters.AddWithValue("@status", "Approval");
+                                cmd.Parameters.AddWithValue("@image", path);
+                                cmd.Parameters.AddWithValue("@role", txtRole.Text.Trim());
+                                cmd.Parameters.AddWithValue("@status", txtStatus.Text.Trim());
                                 cmd.Parameters.AddWithValue("@date", today);
 
                                 cmd.ExecuteNonQuery();
@@ -117,6 +132,37 @@ namespace CafeShopManagement
                         connect.Close();
                     }
                 }
+            }
+        }
+
+        private void RegisterForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtImageView_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void browser_btn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Filter = "Image Files (*.jpg; *.png; *.webp|*.jpg;*.png; *.webp)";
+                string imagePath = "";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    imagePath = dialog.FileName;
+                    txtImageView.ImageLocation = imagePath;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
